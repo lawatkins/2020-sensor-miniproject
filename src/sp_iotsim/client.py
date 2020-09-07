@@ -23,18 +23,24 @@ async def main(port: int, addr: str, max_packets: int, log_file: Path):
     if log_file:
         log_file = Path(log_file).expanduser()
 
+    file = open(log_file, mode='a')
     uri = f"ws://{addr}:{port}"
 
-    async with websockets.connect(uri) as websocket:
-        qb = await websocket.recv()
-        if isinstance(qb, bytes):
-            print(zlib.decompress(qb).decode("utf8"))
-        else:
-            print(qb)
+    try:
+        async with websockets.connect(uri) as websocket:
+            qb = await websocket.recv()
+            if isinstance(qb, bytes):
+                print(zlib.decompress(qb).decode("utf8"))
+            else:
+                print(qb)
 
-        for i in range(max_packets):
-            data = await websocket.recv()
-            if i % 5 == 0:
-                pass
-                # print(f"{i} total messages received")
-            print(data)
+            for i in range(max_packets):
+                data = await websocket.recv()
+                if i % 5 == 0:
+                    pass
+                    # print(f"{i} total messages received")
+                print(data)
+                file.write(data + '\n')
+                file.flush()
+    except:
+        file.close()
