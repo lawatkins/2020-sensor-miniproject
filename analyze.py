@@ -66,74 +66,86 @@ if __name__ == "__main__":
 
 
         # **probability density functions**
-        # # office
-        # print("\n")
-        # print("OFFICE")
-        # temp = data[k]["office"]
-        # temp = temp[~np.isnan(temp)]
-        # temp = np.round(temp)
-        # val, counts = np.unique(temp, return_counts=True)
-        # prob = counts/np.size(temp)
-        #
-        # print(temp)
-        # print(prob)
-        # plt.figure()
-        # plt.bar(val,prob)
-        # plt.title("Office")
-        # plt.ylabel("Prob( "+k+" )")
-        # plt.xlabel(k)
-        #
-        # # class1
-        # print("\n")
-        # print("CLASS1")
-        # temp2 = data[k]["class1"]
-        # temp2 = temp2[~np.isnan(temp2)]
-        # temp2 = np.round(temp2)
-        # val2, counts2 = np.unique(temp2, return_counts=True)
-        # prob2 = counts2/np.size(temp2)
-        #
-        # print(temp2)
-        # print(prob2)
-        # plt.figure()
-        # plt.bar(val2,prob2)
-        # plt.title("Class1")
-        # plt.ylabel("Prob( "+k+" )")
-        # plt.xlabel(k)
-        #
-        # # lab1
-        # print("\n")
-        # print("LAB1")
-        # temp3 = data[k]["lab1"]
-        # temp3 = temp3[~np.isnan(temp3)]
-        # temp3 = np.round(temp3)
-        # val3, counts3 = np.unique(temp3, return_counts=True)
-        # prob3 = counts3/np.size(temp3)
-        #
-        # print(temp3)
-        # plt.figure()
-        # plt.bar(val3,prob3)
-        # plt.title("Lab1")
-        # plt.ylabel("Prob( "+k+" )")
-        # plt.xlabel(k)
+        # office
+        print("\n")
+        print("OFFICE")
+        temp = data[k]["office"]
+        temp = temp[~np.isnan(temp)]
+        temp = np.round(temp)
+        val, counts = np.unique(temp, return_counts=True)
+        prob = counts/np.size(temp)
+
+        print(temp)
+        print(prob)
+        plt.figure()
+        plt.bar(val,prob)
+        plt.title("Office")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
+
+        # class1
+        print("\n")
+        print("CLASS1")
+        temp2 = data[k]["class1"]
+        temp2 = temp2[~np.isnan(temp2)]
+        temp2 = np.round(temp2)
+        val2, counts2 = np.unique(temp2, return_counts=True)
+        prob2 = counts2/np.size(temp2)
+
+        print(temp2)
+        print(prob2)
+        plt.figure()
+        plt.bar(val2,prob2)
+        plt.title("Class1")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
+
+        # lab1
+        print("\n")
+        print("LAB1")
+        temp3 = data[k]["lab1"]
+        temp3 = temp3[~np.isnan(temp3)]
+        temp3 = np.round(temp3)
+        val3, counts3 = np.unique(temp3, return_counts=True)
+        prob3 = counts3/np.size(temp3)
+
+        print(temp3)
+        plt.figure()
+        plt.bar(val3,prob3)
+        plt.title("Lab1")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
         print('\n')
 
     # timing in between readings
     time = data['temperature'].index
-    plt.figure()
-    plt.hist(np.diff(time.values).astype(np.int64) // 1000000000)
-    plt.xlabel("Time between readings")
-    plt.ylabel("count")
-    plt.title("Count of time interval between readings")
 
     time_interval = np.diff(time.values).astype(np.int64) // 1000000000
-    time_med = np.median(time_interval)
+    time_mean = np.mean(time_interval)
     time_var = np.var(time_interval)
-    print("time interval, median:")
-    print(time_med)
+    print("time interval, mean:")
+    print(time_mean)
     print("time interval, variance:")
     print(time_var)
 
+    print('\nTime Intervals')
+    val, counts = np.unique(time_interval, return_counts=True)
+    prob = counts/np.size(time_interval)
 
+    print(time_interval)
+    plt.figure()
+    plt.bar(val,prob)
+    plt.title("Probability of time interval between readings")
+    plt.ylabel("Prob( time interval )")
+    plt.xlabel("Time interval between readings (seconds)")
+
+
+# poisson distribution for the number of times an event occurs in
+# an interval of time or space
+
+# Note that if events occur over time and the time between occurrences
+# follows an exponential then the number that occur in a time period
+# follows a Poisson.
 
 
 
