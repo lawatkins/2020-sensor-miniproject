@@ -86,34 +86,35 @@ if __name__ == "__main__":
         print("OFFICE")
         temp = data[k]["office"]
         temp = temp[~np.isnan(temp)]
+        rng = np.arange(np.floor(np.min(temp)),np.ceil(np.max(temp)), 10)
         print(temp)
         plt.figure()
-        temp.hist(density = True, align = "mid")
+        temp.hist(density = True, bins=rng, align = "mid")
         plt.title("Office")
-        plt.ylabel(k)
-        plt.xlabel("Time (in seconds)")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
 
-        print("\n")
-        print("CLASS1")
-        temp2 = data[k]["class1"]
-        temp2 = temp2[~np.isnan(temp2)]
-        print(temp2)
-        plt.figure()
-        temp2.hist(density = True, align = "mid")
-        plt.title("Class1")
-        plt.ylabel(k)
-        plt.xlabel("Time (in seconds)")
+        # print("\n")
+        # print("CLASS1")
+        # temp2 = data[k]["class1"]
+        # temp2 = temp2[~np.isnan(temp2)]
+        # print(temp2)
+        # plt.figure()
+        # temp2.hist(density = True, align = "mid")
+        # plt.title("Class1")
+        # plt.ylabel(k)
+        # plt.xlabel("Time (in seconds)")
 
-        print("\n")
-        print("LAB1")
-        temp3 = data[k]["lab1"]
-        temp3 = temp3[~np.isnan(temp3)]
-        print(temp3)
-        plt.figure()
-        temp3.hist(density = True, align = "mid")
-        plt.title("Lab1")
-        plt.ylabel(k)
-        plt.xlabel("Time (in seconds)")
+        # print("\n")
+        # print("LAB1")
+        # temp3 = data[k]["lab1"]
+        # temp3 = temp3[~np.isnan(temp3)]
+        # print(temp3)
+        # plt.figure()
+        # temp3.hist(density = True, align = "mid")
+        # plt.title("Lab1")
+        # plt.ylabel(k)
+        # plt.xlabel("Time (in seconds)")
 
 
 
