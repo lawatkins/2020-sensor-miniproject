@@ -86,10 +86,13 @@ if __name__ == "__main__":
         print("OFFICE")
         temp = data[k]["office"]
         temp = temp[~np.isnan(temp)]
-        rng = np.arange(np.floor(np.min(temp)),np.ceil(np.max(temp)), 10)
+        val, counts = np.unique(temp, return_counts=True)
+        prob = counts/np.size(temp)
+    
         print(temp)
+        print(prob)
         plt.figure()
-        temp.hist(density = True, bins=rng, align = "mid")
+        plt.bar(val,prob)
         plt.title("Office")
         plt.ylabel("Prob( "+k+" )")
         plt.xlabel(k)
