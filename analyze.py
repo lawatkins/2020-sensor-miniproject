@@ -55,9 +55,71 @@ if __name__ == "__main__":
     for k in data:
         # data[k].plot()
         time = data[k].index
-        data[k].hist()
+        # temperature, occupancy, co2
+        # data[k].hist()
+        # # timing in between readings
+        # plt.figure()
+        # plt.hist(np.diff(time.values).astype(np.int64) // 1000000000)
+        # plt.xlabel("Time (seconds)")
+
+        # # task 2: analysis
+        # print(k.upper())
+        # median = data[k].median()
+        # variance = data[k].var()
+        # time_interval = np.diff(time.values).astype(np.int64) // 1000000000
+        # time_med = np.median(time_interval)
+        # time_var = np.var(time_interval)
+        #
+        # # median
+        # print("median:")
+        # print(median)
+        # print("time interval, median:")
+        # print(time_med)
+        # # variance
+        # print("variance:")
+        # print(variance)
+        # print("time interval, variance:")
+        # print(time_var)
+
+        # probability density function
+        print("\n")
+        print("OFFICE")
+        temp = data[k]["office"]
+        temp = temp[~np.isnan(temp)]
+        print(temp)
         plt.figure()
-        plt.hist(np.diff(time.values).astype(np.int64) // 1000000000)
-        plt.xlabel("Time (seconds)")
+        temp.hist(density = True, align = "mid")
+        plt.title("Office")
+        plt.ylabel(k)
+        plt.xlabel("Time (in seconds)")
+
+        print("\n")
+        print("CLASS1")
+        temp2 = data[k]["class1"]
+        temp2 = temp2[~np.isnan(temp2)]
+        print(temp2)
+        plt.figure()
+        temp2.hist(density = True, align = "mid")
+        plt.title("Class1")
+        plt.ylabel(k)
+        plt.xlabel("Time (in seconds)")
+
+        print("\n")
+        print("LAB1")
+        temp3 = data[k]["lab1"]
+        temp3 = temp3[~np.isnan(temp3)]
+        print(temp3)
+        plt.figure()
+        temp3.hist(density = True, align = "mid")
+        plt.title("Lab1")
+        plt.ylabel(k)
+        plt.xlabel("Time (in seconds)")
+
+
+
+
+
+
+
 
     plt.show()
