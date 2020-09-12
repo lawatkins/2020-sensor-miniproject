@@ -42,6 +42,14 @@ def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
 
     return data
 
+def detect_anomalies(loc_temp_data):
+# This function takes the temperature data for a location and 
+# outputs the points that are anomalous
+
+    
+
+    return None
+
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="load and analyse IoT JSON data")
@@ -52,70 +60,70 @@ if __name__ == "__main__":
 
     data = load_data(file)
 
-    for k in data:
-        # task 2: analysis
-        print(k.upper())
-        # median
-        median = data[k].median()
-        print("median:")
-        print(median)
-        # variance
-        variance = data[k].var()
-        print("variance:")
-        print(variance)
+    # for k in data:
+    #     # task 2: analysis
+    #     print(k.upper())
+    #     # median
+    #     median = data[k].median()
+    #     print("median:")
+    #     print(median)
+    #     # variance
+    #     variance = data[k].var()
+    #     print("variance:")
+    #     print(variance)
 
 
-        # **probability density functions**
-        # office
-        print("\n")
-        print("OFFICE")
-        temp = data[k]["office"]
-        temp = temp[~np.isnan(temp)]
-        temp = np.round(temp)
-        val, counts = np.unique(temp, return_counts=True)
-        prob = counts/np.size(temp)
+    #     # **probability density functions**
+    #     # office
+    #     print("\n")
+    #     print("OFFICE")
+    #     temp = data[k]["office"]
+    #     temp = temp[~np.isnan(temp)]
+    #     temp = np.round(temp)
+    #     val, counts = np.unique(temp, return_counts=True)
+    #     prob = counts/np.size(temp)
 
-        print(temp)
-        print(prob)
-        plt.figure()
-        plt.bar(val,prob)
-        plt.title("Office")
-        plt.ylabel("Prob( "+k+" )")
-        plt.xlabel(k)
+    #     print(temp)
+    #     print(prob)
+    #     plt.figure()
+    #     plt.bar(val,prob)
+    #     plt.title("Office")
+    #     plt.ylabel("Prob( "+k+" )")
+    #     plt.xlabel(k)
 
-        # class1
-        print("\n")
-        print("CLASS1")
-        temp2 = data[k]["class1"]
-        temp2 = temp2[~np.isnan(temp2)]
-        temp2 = np.round(temp2)
-        val2, counts2 = np.unique(temp2, return_counts=True)
-        prob2 = counts2/np.size(temp2)
+    #     # class1
+    #     print("\n")
+    #     print("CLASS1")
+    #     temp2 = data[k]["class1"]
+    #     temp2 = temp2[~np.isnan(temp2)]
+    #     temp2 = np.round(temp2)
+    #     val2, counts2 = np.unique(temp2, return_counts=True)
+    #     prob2 = counts2/np.size(temp2)
 
-        print(temp2)
-        print(prob2)
-        plt.figure()
-        plt.bar(val2,prob2)
-        plt.title("Class1")
-        plt.ylabel("Prob( "+k+" )")
-        plt.xlabel(k)
+    #     print(temp2)
+    #     print(prob2)
+    #     plt.figure()
+    #     plt.bar(val2,prob2)
+    #     plt.title("Class1")
+    #     plt.ylabel("Prob( "+k+" )")
+    #     plt.xlabel(k)
 
-        # lab1
-        print("\n")
-        print("LAB1")
-        temp3 = data[k]["lab1"]
-        temp3 = temp3[~np.isnan(temp3)]
-        temp3 = np.round(temp3)
-        val3, counts3 = np.unique(temp3, return_counts=True)
-        prob3 = counts3/np.size(temp3)
+    #     # lab1
+    #     print("\n")
+    #     print("LAB1")
+    #     temp3 = data[k]["lab1"]
+    #     temp3 = temp3[~np.isnan(temp3)]
+    #     temp3 = np.round(temp3)
+    #     val3, counts3 = np.unique(temp3, return_counts=True)
+    #     prob3 = counts3/np.size(temp3)
 
-        print(temp3)
-        plt.figure()
-        plt.bar(val3,prob3)
-        plt.title("Lab1")
-        plt.ylabel("Prob( "+k+" )")
-        plt.xlabel(k)
-        print('\n')
+    #     print(temp3)
+    #     plt.figure()
+    #     plt.bar(val3,prob3)
+    #     plt.title("Lab1")
+    #     plt.ylabel("Prob( "+k+" )")
+    #     plt.xlabel(k)
+    #     print('\n')
 
     # timing in between readings
     time = data['temperature'].index
@@ -147,6 +155,33 @@ if __name__ == "__main__":
 # follows an exponential then the number that occur in a time period
 # follows a Poisson.
 
+    plt.figure()
+    plt.title("Office temperature boxplot")
+    temp1 = data["temperature"]["office"]
+    temp1 = temp1[~np.isnan(temp1)]
+    plt.boxplot(temp1)
+
+    plt.figure()
+    plt.title("Class1 temperature boxplot")
+    temp2 = data["temperature"]["class1"]
+    temp2 = temp2[~np.isnan(temp2)]
+    plt.boxplot(temp2)
+
+    plt.figure()
+    plt.title("Lab1 temperature boxplot")
+    temp3 = data["temperature"]["lab1"]
+    temp3 = temp3[~np.isnan(temp3)]
+    bp = plt.boxplot(temp3)
+    # outliers = bp['fliers'][0].get_ydata()
+    # pos = outliers[outliers > bp['medians'][0].get_ydata()[0] ]
+    print(bp['fliers'][0].get_ydata())
+    # temp2 = data["temperature"]["class1"]
+    # temp2 = temp2[~np.isnan(temp2)]
+    # temp3 = data["temperature"]["lab1"]
+    # temp3 = temp3[~np.isnan(temp3)]
+    # newdata = pandas.merge(temp1,temp2,temp3)
+    # newdata.boxplot(column=["office", "class1", "lab1"])
+    # data["temperature"].boxplot(column=["office", "class1", "lab1"])
 
 
     plt.show()
