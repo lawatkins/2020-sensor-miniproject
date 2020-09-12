@@ -42,13 +42,67 @@ def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
 
     return data
 
-def detect_anomalies(loc_temp_data):
-# This function takes the temperature data for a location and 
-# outputs the points that are anomalous
-
+def detect_anomalies(loc_temp_data, loc, plot=False):
+    # This function takes the temperature data for a location and 
+    # outputs the points that are anomalous
+    if plot:
+        plt.figure()
+        plt.title(loc+" temperature boxplot")
     
+    # Creates a boxplot of the data 
+    bp = plt.boxplot(loc_temp_data)
 
-    return None
+    print("BP med: \n %f\n" % bp['medians'][0].get_ydata()[0])
+    print("BP Whiskers: \n %f, %f\n" %(bp['caps'][0].get_ydata()[0],bp['caps'][1].get_ydata()[0]) )
+    print("\n")
+
+    # Gets the upper and lower whiskers of the data
+    bp_top_whisker = bp['caps'][1].get_ydata()[0]
+    bp_bottom_whisker = bp['caps'][0].get_ydata()[0]
+    
+    # Gets the outlier points above/below the whiskers
+    upper_outliers = loc_temp_data[loc_temp_data > bp_top_whisker]
+    lower_outliers = loc_temp_data[loc_temp_data < bp_bottom_whisker]
+    
+    print("BP lower outliers: \n")
+    print(np.sort(lower_outliers))
+    print("\n")
+
+    print("BP upper outliers: \n")
+    print(np.sort(upper_outliers))
+    print("\n")
+
+    if plot:
+        plt.figure()
+        plt.title(loc+" Boxplot of Upper bound of outliers")
+    
+    # Creates boxplot of upper outliers, sets anomalies as upper outliers of upper outliers
+    bp_upper = plt.boxplot(upper_outliers)
+    upper_anomaly_bound = bp_upper['caps'][1].get_ydata()[0]
+    upper_anomalies = loc_temp_data[loc_temp_data > upper_anomaly_bound]
+    
+    print("BP upper anomaly bound: %f\n" %upper_anomaly_bound)
+    print("BP upper anomalies: \n")
+    print(np.sort(upper_anomalies))
+    print("\n")
+
+    if plot:
+        plt.figure()
+        plt.title(loc+" Boxplot of Lower bound of outliers")
+
+    # Creates boxplot of lower outliers, sets anomalies as lower outliers of lower outliers
+    bp_lower = plt.boxplot(lower_outliers)
+    lower_anomaly_bound = bp_lower['caps'][0].get_ydata()[0]
+    lower_anomalies = loc_temp_data[loc_temp_data < lower_anomaly_bound]
+    
+    print("BP lower anomaly bound: %f\n" %lower_anomaly_bound)
+    print("BP lower anomalies: \n")
+    print(np.sort(lower_anomalies))
+    print("\n")
+    
+    if plot:
+        plt.show()
+    return np.concatenate((lower_anomalies, upper_anomalies), axis=None)
 
 
 if __name__ == "__main__":
@@ -60,70 +114,70 @@ if __name__ == "__main__":
 
     data = load_data(file)
 
-    # for k in data:
-    #     # task 2: analysis
-    #     print(k.upper())
-    #     # median
-    #     median = data[k].median()
-    #     print("median:")
-    #     print(median)
-    #     # variance
-    #     variance = data[k].var()
-    #     print("variance:")
-    #     print(variance)
+    for k in data:
+        # task 2: analysis
+        print(k.upper())
+        # median
+        median = data[k].median()
+        print("median:")
+        print(median)
+        # variance
+        variance = data[k].var()
+        print("variance:")
+        print(variance)
 
 
-    #     # **probability density functions**
-    #     # office
-    #     print("\n")
-    #     print("OFFICE")
-    #     temp = data[k]["office"]
-    #     temp = temp[~np.isnan(temp)]
-    #     temp = np.round(temp)
-    #     val, counts = np.unique(temp, return_counts=True)
-    #     prob = counts/np.size(temp)
+        # **probability density functions**
+        # office
+        print("\n")
+        print("OFFICE")
+        temp = data[k]["office"]
+        temp = temp[~np.isnan(temp)]
+        temp = np.round(temp)
+        val, counts = np.unique(temp, return_counts=True)
+        prob = counts/np.size(temp)
 
-    #     print(temp)
-    #     print(prob)
-    #     plt.figure()
-    #     plt.bar(val,prob)
-    #     plt.title("Office")
-    #     plt.ylabel("Prob( "+k+" )")
-    #     plt.xlabel(k)
+        print(temp)
+        print(prob)
+        plt.figure()
+        plt.bar(val,prob)
+        plt.title("Office")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
 
-    #     # class1
-    #     print("\n")
-    #     print("CLASS1")
-    #     temp2 = data[k]["class1"]
-    #     temp2 = temp2[~np.isnan(temp2)]
-    #     temp2 = np.round(temp2)
-    #     val2, counts2 = np.unique(temp2, return_counts=True)
-    #     prob2 = counts2/np.size(temp2)
+        # class1
+        print("\n")
+        print("CLASS1")
+        temp2 = data[k]["class1"]
+        temp2 = temp2[~np.isnan(temp2)]
+        temp2 = np.round(temp2)
+        val2, counts2 = np.unique(temp2, return_counts=True)
+        prob2 = counts2/np.size(temp2)
 
-    #     print(temp2)
-    #     print(prob2)
-    #     plt.figure()
-    #     plt.bar(val2,prob2)
-    #     plt.title("Class1")
-    #     plt.ylabel("Prob( "+k+" )")
-    #     plt.xlabel(k)
+        print(temp2)
+        print(prob2)
+        plt.figure()
+        plt.bar(val2,prob2)
+        plt.title("Class1")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
 
-    #     # lab1
-    #     print("\n")
-    #     print("LAB1")
-    #     temp3 = data[k]["lab1"]
-    #     temp3 = temp3[~np.isnan(temp3)]
-    #     temp3 = np.round(temp3)
-    #     val3, counts3 = np.unique(temp3, return_counts=True)
-    #     prob3 = counts3/np.size(temp3)
+        # lab1
+        print("\n")
+        print("LAB1")
+        temp3 = data[k]["lab1"]
+        temp3 = temp3[~np.isnan(temp3)]
+        temp3 = np.round(temp3)
+        val3, counts3 = np.unique(temp3, return_counts=True)
+        prob3 = counts3/np.size(temp3)
 
-    #     print(temp3)
-    #     plt.figure()
-    #     plt.bar(val3,prob3)
-    #     plt.title("Lab1")
-    #     plt.ylabel("Prob( "+k+" )")
-    #     plt.xlabel(k)
-    #     print('\n')
+        print(temp3)
+        plt.figure()
+        plt.bar(val3,prob3)
+        plt.title("Lab1")
+        plt.ylabel("Prob( "+k+" )")
+        plt.xlabel(k)
+        print('\n')
 
     # timing in between readings
     time = data['temperature'].index
@@ -146,6 +200,7 @@ if __name__ == "__main__":
     plt.title("Probability of time interval between readings")
     plt.ylabel("Prob( time interval )")
     plt.xlabel("Time interval between readings (seconds)")
+    plt.show()
 
 
 # poisson distribution for the number of times an event occurs in
@@ -154,34 +209,20 @@ if __name__ == "__main__":
 # Note that if events occur over time and the time between occurrences
 # follows an exponential then the number that occur in a time period
 # follows a Poisson.
+    
+# Task 3 - Anomalies
 
-    plt.figure()
-    plt.title("Office temperature boxplot")
-    temp1 = data["temperature"]["office"]
-    temp1 = temp1[~np.isnan(temp1)]
-    plt.boxplot(temp1)
+    # Gets temperature data
+    temperature_data = data["temperature"]
+    # Dict to store anomalies indexed by location
+    anomalies = {}
+    # Loops through all locations
+    for k in temperature_data:
+        print(k + "\n")
+        loc_temperature_data = temperature_data[k]
+        loc_temperature_data = loc_temperature_data[~np.isnan(loc_temperature_data)]
+        # Gets anomalies for the temperature data in the current location and stores in dict
+        anomalies[k] = detect_anomalies(loc_temperature_data, k)
+        print("/////////////////////////////////////\n")
+    print(anomalies)
 
-    plt.figure()
-    plt.title("Class1 temperature boxplot")
-    temp2 = data["temperature"]["class1"]
-    temp2 = temp2[~np.isnan(temp2)]
-    plt.boxplot(temp2)
-
-    plt.figure()
-    plt.title("Lab1 temperature boxplot")
-    temp3 = data["temperature"]["lab1"]
-    temp3 = temp3[~np.isnan(temp3)]
-    bp = plt.boxplot(temp3)
-    # outliers = bp['fliers'][0].get_ydata()
-    # pos = outliers[outliers > bp['medians'][0].get_ydata()[0] ]
-    print(bp['fliers'][0].get_ydata())
-    # temp2 = data["temperature"]["class1"]
-    # temp2 = temp2[~np.isnan(temp2)]
-    # temp3 = data["temperature"]["lab1"]
-    # temp3 = temp3[~np.isnan(temp3)]
-    # newdata = pandas.merge(temp1,temp2,temp3)
-    # newdata.boxplot(column=["office", "class1", "lab1"])
-    # data["temperature"].boxplot(column=["office", "class1", "lab1"])
-
-
-    plt.show()
