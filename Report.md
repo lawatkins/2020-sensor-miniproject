@@ -1,7 +1,6 @@
 # Miniproject Report -- Anirudh Watturkar and Luisa Watkins
 
 ## Intro/Task 0
----
 
 The purpose of this project is to simulate the data gathering and analysis process in a hardware system communicating with many sensors. The first step in accomplishing this was to set an environment capable of running python websockets and the given simulator code. Upon establishing a connection between the server and the client, the following greeting string is issued by the server to the client:
 ![ECE Capstone IoT simulator](images/message.jpg)
@@ -32,4 +31,18 @@ For this task, we took the temperature data from Task 2 and designed and impleme
 2.
 3. Possible bounds on temperature for 'office' are: 32.026650 and 16.859730. Possible bounds on temperature for 'class1' are: 37.560409 and 20.007925. Possible bounds on temperature for 'lab1' are: 24.269385 and 18.011436.
 
-## Task 4
+## Task 4 - Conclusions
+
+This project served as a simulation of a hardware system that interacts with sensors, both in the aspect of gathering and analyzing data. Much like real-world systems, this simulation required collecting data routinely and storing the data for use in analysis. This also involved connecting a server and a client node for data communication. Though this was done through a locally hosted server on the same machine, this process would be very similar in the case where the server and the client were separate, since the actual data logging process would remain the same. In terms of analysis, this process was virtually the same as in the real-world, where you are given a large amount of data and you are trying to make sense of it.
+
+Like many simulations, however, this also has limitations. For example, the data does not seem to have any dependence on the time it was collected. When gathering this data, you may expect that the each of the sensor readings would change during the night versus during the day as there would be less people in the building in the night, as well as lower ambient temperatures, leading to lower readings on each sensor. Another limitation is the number of rooms that the data is gathered from. The simulation only provides three room types, when in the real world, there would typically be more rooms that are being analyzed. With a larger number of rooms, the problem of gathering readings from many sources at once becomes more apparent, and would have to be accounted for in real-world system.
+
+This introduces the idea of the server polling the sensors versus the sensors pushing to the server. In the case of polling, the server routinely flips between sensors and gets their readings. In the case of pushing, the sensors send a request (usually asynchronously) to the server to take their data. 
+
+The polling method works well for systems that need to consistently gather data, since it would regularly gather data from all sensors, but has the limitation that it may poll stale data from sensors that are not ready to be read yet. If sensors request the server wait until their data can be read, this can slow down the reading time for the server, and can even cause the server to wait indefinately if the sensor fails. On the other hand, if the server skips a sensor that is not ready to be read, the data will not be consistently gathered across all sensors, leading to potentially poor data collection. Also, if there are many sensors to poll, the data from other sensors may be stale by the time it is recorded by the server. 
+
+Conversely, the pushing method allows the server to only receive valid data from the sensors, as they send data to the server only when they are ready. This prevents the system from failing in the polling case, since the server will not be locked waiting for sensor data. Also, in the case of few sensors or very spaced out readings, the server can go into a powersaving/sleep mode to reduce power consumption. This, however introduces the new challenge of race conditions if mulitple sensors attempt to send data to the server at once.
+
+For the purposes of this project, the 'best' method really depends on the intended use case. In its current state, it may be more advantageous to poll, since the sensors are read from often enough to limit the power comsumption benefits of sleeping offered by the other method, and there are not too many sensors that would delay readings from other sensors. 
+
+In terms of the difficulty of using the simulation tool, though neither us have used the c/c++ websockets tool, we found using the python based tool fairly intuitive after spending time using it. Even without using the c/c++ tool for websockets, it is very likely that the python version is easier to operate, at least syntatcially so.
