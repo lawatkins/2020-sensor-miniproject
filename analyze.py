@@ -83,10 +83,10 @@ def detect_anomalies(loc_temp_data, loc, plot=False):
     upper_anomaly_bound = bp_upper['caps'][1].get_ydata()[0]
     upper_anomalies = loc_temp_data[loc_temp_data > upper_anomaly_bound]
 
-    # print("BP upper anomaly bound: %f\n" %upper_anomaly_bound)
-    # print("BP upper anomalies: \n")
-    # print(np.sort(upper_anomalies))
-    # print("\n")
+    print("BP upper anomaly bound: %f\n" %upper_anomaly_bound)
+    print("BP upper anomalies: \n")
+    print(np.sort(upper_anomalies))
+    print("\n")
 
     if plot:
         plt.figure()
@@ -97,10 +97,10 @@ def detect_anomalies(loc_temp_data, loc, plot=False):
     lower_anomaly_bound = bp_lower['caps'][0].get_ydata()[0]
     lower_anomalies = loc_temp_data[loc_temp_data < lower_anomaly_bound]
 
-    # print("BP lower anomaly bound: %f\n" %lower_anomaly_bound)
-    # print("BP lower anomalies: \n")
-    # print(np.sort(lower_anomalies))
-    # print("\n")
+    print("BP lower anomaly bound: %f\n" %lower_anomaly_bound)
+    print("BP lower anomalies: \n")
+    print(np.sort(lower_anomalies))
+    print("\n")
 
     if plot:
         plt.show()
@@ -174,32 +174,36 @@ if __name__ == "__main__":
     # Dict to store anomalies indexed by location
     anomalies = {}
     new_data = {}
-    # Loops through all locations
-    for k in temperature_data:
-        loc_temperature_data = temperature_data[k]
-        loc_temperature_data = loc_temperature_data[~np.isnan(loc_temperature_data)]
-        # Gets anomalies for the temperature data in the current location and stores in dict
-        anomalies[k] = detect_anomalies(loc_temperature_data, k)
-        intersect, ai, bi = np.intersect1d(loc_temperature_data,anomalies[k],return_indices=True)
-        new_data[k] = np.delete(loc_temperature_data.values,ai)
-        temperature_data[k] = loc_temperature_data
 
-    original_size = np.size(temperature_data)
-    anomaly_size = np.size(anomalies['office']) + np.size(anomalies['class1']) + np.size(anomalies['lab1'])
+    k = 'class1'
+    loc_temperature_data = temperature_data[k]
+    loc_temperature_data = loc_temperature_data[~np.isnan(loc_temperature_data)]
+    # Gets anomalies for the temperature data in the current location and stores in dict
+    anomalies[k] = detect_anomalies(loc_temperature_data, k)
+    intersect, ai, bi = np.intersect1d(loc_temperature_data,anomalies[k],return_indices=True)
+    new_data[k] = np.delete(loc_temperature_data.values,ai)
+    # temperature_data[k] = loc_temperature_data
+
+
+    original_size = np.size(loc_temperature_data)
+    anomaly_size = np.size(anomalies['class1'])
     bad_data_perc = anomaly_size / original_size
     print('\n\nANOMALY DETECTION (temperature)\n')
     print('percent of bad data points:')
     print(bad_data_perc)
 
     # values for new data set with anomalies removed
-    for k in temperature_data:
-        print('\n')
-        print("classrooom: "+k)
-        # median
-        median = np.median(new_data["class1"])
-        print("new data's median:")
-        print(median)
-        # variance
-        variance = np.var(new_data['class1'])
-        print("new data's variance:")
-        print(variance)
+    print("\nclassrooom: "+k)
+    # median
+    median = np.median(new_data["class1"])
+    print("new data's median:")
+    print(median)
+    # variance
+    variance = np.var(new_data['class1'])
+    print("new data's variance:")
+    print(variance)
+
+
+    loc_temperature_data = temperature_data['class1']
+    loc_temperature_data = loc_temperature_data[~np.isnan(loc_temperature_data)]
+    test = detect_anomalies(loc_temperature_data, 'class1')
