@@ -43,48 +43,48 @@ def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
     return data
 
 def detect_anomalies(loc_temp_data, loc, plot=False):
-    # This function takes the temperature data for a location and 
+    # This function takes the temperature data for a location and
     # outputs the points that are anomalous
     if plot:
         plt.figure()
         plt.title(loc+" temperature boxplot")
-    
-    # Creates a boxplot of the data 
+
+    # Creates a boxplot of the data
     bp = plt.boxplot(loc_temp_data)
 
-    print("BP med: \n %f\n" % bp['medians'][0].get_ydata()[0])
-    print("BP Whiskers: \n %f, %f\n" %(bp['caps'][0].get_ydata()[0],bp['caps'][1].get_ydata()[0]) )
-    print("\n")
+    # print("BP med: \n %f\n" % bp['medians'][0].get_ydata()[0])
+    # print("BP Whiskers: \n %f, %f\n" %(bp['caps'][0].get_ydata()[0],bp['caps'][1].get_ydata()[0]) )
+    # print("\n")
 
     # Gets the upper and lower whiskers of the data
     bp_top_whisker = bp['caps'][1].get_ydata()[0]
     bp_bottom_whisker = bp['caps'][0].get_ydata()[0]
-    
+
     # Gets the outlier points above/below the whiskers
     upper_outliers = loc_temp_data[loc_temp_data > bp_top_whisker]
     lower_outliers = loc_temp_data[loc_temp_data < bp_bottom_whisker]
-    
-    print("BP lower outliers: \n")
-    print(np.sort(lower_outliers))
-    print("\n")
 
-    print("BP upper outliers: \n")
-    print(np.sort(upper_outliers))
-    print("\n")
+    # print("BP lower outliers: \n")
+    # print(np.sort(lower_outliers))
+    # print("\n")
+    #
+    # print("BP upper outliers: \n")
+    # print(np.sort(upper_outliers))
+    # print("\n")
 
     if plot:
         plt.figure()
         plt.title(loc+" Boxplot of Upper bound of outliers")
-    
+
     # Creates boxplot of upper outliers, sets anomalies as upper outliers of upper outliers
     bp_upper = plt.boxplot(upper_outliers)
     upper_anomaly_bound = bp_upper['caps'][1].get_ydata()[0]
     upper_anomalies = loc_temp_data[loc_temp_data > upper_anomaly_bound]
-    
-    print("BP upper anomaly bound: %f\n" %upper_anomaly_bound)
-    print("BP upper anomalies: \n")
-    print(np.sort(upper_anomalies))
-    print("\n")
+
+    # print("BP upper anomaly bound: %f\n" %upper_anomaly_bound)
+    # print("BP upper anomalies: \n")
+    # print(np.sort(upper_anomalies))
+    # print("\n")
 
     if plot:
         plt.figure()
@@ -94,12 +94,12 @@ def detect_anomalies(loc_temp_data, loc, plot=False):
     bp_lower = plt.boxplot(lower_outliers)
     lower_anomaly_bound = bp_lower['caps'][0].get_ydata()[0]
     lower_anomalies = loc_temp_data[loc_temp_data < lower_anomaly_bound]
-    
-    print("BP lower anomaly bound: %f\n" %lower_anomaly_bound)
-    print("BP lower anomalies: \n")
-    print(np.sort(lower_anomalies))
-    print("\n")
-    
+
+    # print("BP lower anomaly bound: %f\n" %lower_anomaly_bound)
+    # print("BP lower anomalies: \n")
+    # print(np.sort(lower_anomalies))
+    # print("\n")
+
     if plot:
         plt.show()
     return np.concatenate((lower_anomalies, upper_anomalies), axis=None)
@@ -114,48 +114,52 @@ if __name__ == "__main__":
 
     data = load_data(file)
 
+    print('***Room of interest is: class1***\n')
     for k in data:
         # task 2: analysis
         print(k.upper())
+        # mean
+        mean = data[k]['class1'].mean()
+        print('mean:')
+        print(mean)
         # median
-        median = data[k].median()
+        median = data[k]['class1'].median()
         print("median:")
         print(median)
         # variance
-        variance = data[k].var()
+        variance = data[k]['class1'].var()
         print("variance:")
         print(variance)
 
 
         # **probability density functions**
         # office
-        print("\n")
-        print("OFFICE")
-        temp = data[k]["office"]
-        temp = temp[~np.isnan(temp)]
-        temp = np.round(temp)
-        val, counts = np.unique(temp, return_counts=True)
-        prob = counts/np.size(temp)
-
-        print(temp)
-        print(prob)
-        plt.figure()
-        plt.bar(val,prob)
-        plt.title("Office")
-        plt.ylabel("Prob( "+k+" )")
-        plt.xlabel(k)
+        # print("\n")
+        # print("OFFICE")
+        # temp = data[k]["office"]
+        # temp = temp[~np.isnan(temp)]
+        # temp = np.round(temp)
+        # val, counts = np.unique(temp, return_counts=True)
+        # prob = counts/np.size(temp)
+        #
+        # print(temp)
+        # print(prob)
+        # plt.figure()
+        # plt.bar(val,prob)
+        # plt.title("Office")
+        # plt.ylabel("Prob( "+k+" )")
+        # plt.xlabel(k)
 
         # class1
         print("\n")
-        print("CLASS1")
         temp2 = data[k]["class1"]
         temp2 = temp2[~np.isnan(temp2)]
         temp2 = np.round(temp2)
         val2, counts2 = np.unique(temp2, return_counts=True)
         prob2 = counts2/np.size(temp2)
 
-        print(temp2)
-        print(prob2)
+        # print(temp2)
+        # print(prob2)
         plt.figure()
         plt.bar(val2,prob2)
         plt.title("Class1")
@@ -163,21 +167,21 @@ if __name__ == "__main__":
         plt.xlabel(k)
 
         # lab1
-        print("\n")
-        print("LAB1")
-        temp3 = data[k]["lab1"]
-        temp3 = temp3[~np.isnan(temp3)]
-        temp3 = np.round(temp3)
-        val3, counts3 = np.unique(temp3, return_counts=True)
-        prob3 = counts3/np.size(temp3)
-
-        print(temp3)
-        plt.figure()
-        plt.bar(val3,prob3)
-        plt.title("Lab1")
-        plt.ylabel("Prob( "+k+" )")
-        plt.xlabel(k)
-        print('\n')
+        # print("\n")
+        # print("LAB1")
+        # temp3 = data[k]["lab1"]
+        # temp3 = temp3[~np.isnan(temp3)]
+        # temp3 = np.round(temp3)
+        # val3, counts3 = np.unique(temp3, return_counts=True)
+        # prob3 = counts3/np.size(temp3)
+        #
+        # print(temp3)
+        # plt.figure()
+        # plt.bar(val3,prob3)
+        # plt.title("Lab1")
+        # plt.ylabel("Prob( "+k+" )")
+        # plt.xlabel(k)
+        # print('\n')
 
     # timing in between readings
     time = data['temperature'].index
@@ -190,11 +194,11 @@ if __name__ == "__main__":
     print("time interval, variance:")
     print(time_var)
 
-    print('\nTime Intervals')
+    # print('\nTime Intervals')
     val, counts = np.unique(time_interval, return_counts=True)
     prob = counts/np.size(time_interval)
 
-    print(time_interval)
+    # print(time_interval)
     plt.figure()
     plt.bar(val,prob)
     plt.title("Probability of time interval between readings")
@@ -209,20 +213,41 @@ if __name__ == "__main__":
 # Note that if events occur over time and the time between occurrences
 # follows an exponential then the number that occur in a time period
 # follows a Poisson.
-    
+
 # Task 3 - Anomalies
 
     # Gets temperature data
     temperature_data = data["temperature"]
     # Dict to store anomalies indexed by location
     anomalies = {}
+    new_data = {}
     # Loops through all locations
     for k in temperature_data:
-        print(k + "\n")
         loc_temperature_data = temperature_data[k]
         loc_temperature_data = loc_temperature_data[~np.isnan(loc_temperature_data)]
         # Gets anomalies for the temperature data in the current location and stores in dict
         anomalies[k] = detect_anomalies(loc_temperature_data, k)
-        print("/////////////////////////////////////\n")
-    print(anomalies)
+        intersect, ai, bi = np.intersect1d(loc_temperature_data,anomalies[k],return_indices=True)
+        new_data[k] = np.delete(loc_temperature_data.values,ai)
+        # print("/////////////////////////////////////\n")
+    # print(anomalies)
 
+    original_size = np.size(temperature_data)
+    anomaly_size = np.size(anomalies['office']) + np.size(anomalies['class1']) + np.size(anomalies['lab1'])
+    bad_data_perc = anomaly_size / original_size
+    print('\n\nANOMALY DETECTION (temperature)')
+    print('percent of bad data points:')
+    print(bad_data_perc)
+
+    for k in temperature_data:
+        print('\n')
+        print("classrooom: "+k)
+        # median
+        median = np.median(new_data["class1"])
+        print("new data's median:")
+        print(median)
+        # variance
+        variance = np.var(new_data['class1'])
+        print("new data's variance:")
+        print(variance)
+    
