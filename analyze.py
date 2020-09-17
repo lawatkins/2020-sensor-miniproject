@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+# function to load data
 def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
 
     temperature = {}
@@ -42,6 +43,7 @@ def load_data(file: Path) -> T.Dict[str, pandas.DataFrame]:
 
     return data
 
+# function for anomaly detection
 def detect_anomalies(loc_temp_data, loc, plot=False):
     # This function takes the temperature data for a location and
     # outputs the points that are anomalous
@@ -104,19 +106,18 @@ def detect_anomalies(loc_temp_data, loc, plot=False):
         plt.show()
     return np.concatenate((lower_anomalies, upper_anomalies), axis=None)
 
-
+# main function
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description="load and analyse IoT JSON data")
     p.add_argument("file", help="path to JSON data file")
     P = p.parse_args()
 
     file = Path(P.file).expanduser()
-
     data = load_data(file)
 
+    # ******Task 2 - Analysis******
     print('***Room of interest is: class1***\n')
     for k in data:
-        # task 2: analysis
         print(k.upper())
         # mean
         mean = data[k]['class1'].mean()
@@ -131,25 +132,6 @@ if __name__ == "__main__":
         print("variance:")
         print(variance)
 
-
-        # **probability density functions**
-        # office
-        # print("\n")
-        # print("OFFICE")
-        # temp = data[k]["office"]
-        # temp = temp[~np.isnan(temp)]
-        # temp = np.round(temp)
-        # val, counts = np.unique(temp, return_counts=True)
-        # prob = counts/np.size(temp)
-        #
-        # print(temp)
-        # print(prob)
-        # plt.figure()
-        # plt.bar(val,prob)
-        # plt.title("Office")
-        # plt.ylabel("Prob( "+k+" )")
-        # plt.xlabel(k)
-
         # class1
         print("\n")
         temp2 = data[k]["class1"]
@@ -158,34 +140,14 @@ if __name__ == "__main__":
         val2, counts2 = np.unique(temp2, return_counts=True)
         prob2 = counts2/np.size(temp2)
 
-        # print(temp2)
-        # print(prob2)
         plt.figure()
         plt.bar(val2,prob2)
         plt.title("Class1")
         plt.ylabel("Prob( "+k+" )")
         plt.xlabel(k)
 
-        # lab1
-        # print("\n")
-        # print("LAB1")
-        # temp3 = data[k]["lab1"]
-        # temp3 = temp3[~np.isnan(temp3)]
-        # temp3 = np.round(temp3)
-        # val3, counts3 = np.unique(temp3, return_counts=True)
-        # prob3 = counts3/np.size(temp3)
-        #
-        # print(temp3)
-        # plt.figure()
-        # plt.bar(val3,prob3)
-        # plt.title("Lab1")
-        # plt.ylabel("Prob( "+k+" )")
-        # plt.xlabel(k)
-        # print('\n')
-
     # timing in between readings
     time = data['temperature'].index
-
     time_interval = np.diff(time.values).astype(np.int64) // 1000000000
     time_mean = np.mean(time_interval)
     time_var = np.var(time_interval)
@@ -206,16 +168,7 @@ if __name__ == "__main__":
     plt.xlabel("Time interval between readings (seconds)")
     plt.show()
 
-
-# poisson distribution for the number of times an event occurs in
-# an interval of time or space
-
-# Note that if events occur over time and the time between occurrences
-# follows an exponential then the number that occur in a time period
-# follows a Poisson.
-
-# Task 3 - Anomalies
-
+    # ******Task 3 - Anomalies******
     # Gets temperature data
     temperature_data = data["temperature"]
     # Dict to store anomalies indexed by location
@@ -229,16 +182,16 @@ if __name__ == "__main__":
         anomalies[k] = detect_anomalies(loc_temperature_data, k)
         intersect, ai, bi = np.intersect1d(loc_temperature_data,anomalies[k],return_indices=True)
         new_data[k] = np.delete(loc_temperature_data.values,ai)
-        # print("/////////////////////////////////////\n")
-    # print(anomalies)
+        temperature_data[k] = loc_temperature_data
 
     original_size = np.size(temperature_data)
     anomaly_size = np.size(anomalies['office']) + np.size(anomalies['class1']) + np.size(anomalies['lab1'])
     bad_data_perc = anomaly_size / original_size
-    print('\n\nANOMALY DETECTION (temperature)')
+    print('\n\nANOMALY DETECTION (temperature)\n')
     print('percent of bad data points:')
     print(bad_data_perc)
 
+    # values for new data set with anomalies removed
     for k in temperature_data:
         print('\n')
         print("classrooom: "+k)
@@ -250,4 +203,3 @@ if __name__ == "__main__":
         variance = np.var(new_data['class1'])
         print("new data's variance:")
         print(variance)
-    
