@@ -32,7 +32,20 @@ Anomaly detection function within analyze.py:
 
 ![function in analyze.py](images/anomalycode.jpg)
 
-1. For the room 'class1', the percent of "bad" data points is 0.02187 (2%), the temperature median with these bad points discarded is 26.98942, and the temperature variance with these bad points discarded is 1.55910.
+1. For the algorithm that detects anomalies, we first plotted a box-plot for all of the data points, making sure to look at the outliers on each side of the box's "whiskers." We then took the outliers below the median to create another box-plot, where we found the new outliers below the new median as anomalies. We followed a similar process for the outliers above the original box-plot's median (creating a new box-plot and finding the new outliers above the new median) to find more anomalies. For the room 'class1,' the percent of "bad" data points is 0.02187 (2%), the temperature median with these bad points discarded is 26.98942, and the temperature variance with these bad points discarded is 1.55910.
+
+### Original Box-plot
+
+![Original Box-plot](images/ogplot.jpg)
+
+### Lower Bound Box-plot
+
+![Lower Box-plot](images/lower.jpg)
+
+### Higher Bound Box-plot
+
+![Higher Box-plot](images/higher.jpg)
+
 2. In terms of persistent changes in temperature, there are multiple cases. If the temperature is persistently at a very different value from the rest of the distribution, then it depends; for example, if there is a fire then it makes sense for a persistent change to occur, but if there is no environmental difference and the temperature value is not within the bounds of common sense. On the other hand if the temperature is persistently changing and is jumping from one value to another very different value, then that most likely indicates a failed sensor.
 3. Possible bounds on temperature for 'office' are: 32.026650 and 16.859730. Possible bounds on temperature for 'class1' are: 37.560409 and 20.007925. Possible bounds on temperature for 'lab1' are: 24.269385 and 18.011436.
 
