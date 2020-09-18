@@ -11,22 +11,27 @@ In this portion, we were tasked to implement File I/O to write the JSON data rec
 
 ## Task 2
 
-In this section we perform an analysis of the data we gathered in the previous part. The code for the analysis is in analyze.py, which reads in the JSON-formatted log file. We first started by familiarizing ourselves with the existing dictionary that stored the sensor data per each location. Then, we extracted the sensor data (temperature, occupancy, cO2) for each location, and got the summary statistics for each (mean, median, variance). We also plotted normalized histograms for each sensor and location to get a sense of the distribution of the data for each sensor type. For the purpose of this report, we have chosen to highlight the room 'class1':
-1. From the observed temperature data for class1, the median is 26.98867 and the variance is 141.80998.
-2. From the observed occupancy data for class1, the median is 19.0 and the variance is 19.35041.
-3. Temperature Sensor Histogram:
+In this section we perform an analysis of the data we gathered in the previous part. The code for the analysis is in analyze.py, which reads in the JSON-formatted log file. We first started by familiarizing ourselves with the existing dictionary that stored the sensor data per each location. Then, we extracted the sensor data (temperature, occupancy, cO2) for each location, and got the summary statistics for each (median, variance). We also plotted normalized histograms for each sensor and location to get a sense of the distribution of the data for each sensor type. For the purpose of this report, we have chosen to highlight the room 'class1':
+### 1. From the observed temperature data for class1, the median is 26.98867 and the variance is 141.80998.
+### 2. From the observed occupancy data for class1, the median is 19.0 and the variance is 19.35041.
+### 3. Temperature Sensor Histogram:
 ![Temperature Sensor Histogram](images/temperature.jpg)
-Occupancy Sensor Histogram:
+### Occupancy Sensor Histogram:
 ![Occupancy Sensor Histogram](images/occupancy.jpg)
-CO2 Sensor Histogram:
+### CO2 Sensor Histogram:
 ![CO2 Sensor Histogram](images/co2.jpg)
-4. For the time interval of the sensor readings, the mean is 0.58842 and the variance is 0.91931.
+### 4. For the time interval of the sensor readings, the mean is 0.58842 and the variance is 0.91931.
 ![Time Interval Histogram](images/time_interval.jpg)
 Yes, this time interval histogram does mimic a well-known distribution--the Erlang distribution. If we look at what happens within a time interval, we are focusing on how many sensor readings occur. Since this deals with the number of times an event occurs in an interval of time, this follows a Poisson distribution. Since the number of events that occur in a time period follows a Poisson, then the time between occurrences follows an Erlang distribution.
 
 ## Task 3
 
 For this task, we took the temperature data from Task 2 and designed and implemented an algorithm to detect anomalies. This is since the temperature variance was larger than expected due to "bad" data values that are unrealistically large and small. We wrote a new function called detect_anomalies and used it within it analyze.py.
+
+Anomaly detection function within analyze.py:
+
+![function in analyze.py](images/anomalycode.jpg)
+
 1. For the room 'class1', the percent of "bad" data points is 0.02187 (2%), the temperature median with these bad points discarded is 26.98942, and the temperature variance with these bad points discarded is 1.55910.
 2. In terms of persistent changes in temperature, there are multiple cases. If the temperature is persistently at a very different value from the rest of the distribution, then it depends; for example, if there is a fire then it makes sense for a persistent change to occur, but if there is no environmental difference and the temperature value is not within the bounds of common sense. On the other hand if the temperature is persistently changing and is jumping from one value to another very different value, then that most likely indicates a failed sensor.
 3. Possible bounds on temperature for 'office' are: 32.026650 and 16.859730. Possible bounds on temperature for 'class1' are: 37.560409 and 20.007925. Possible bounds on temperature for 'lab1' are: 24.269385 and 18.011436.
